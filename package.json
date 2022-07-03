@@ -1,0 +1,33 @@
+{
+	"name": "monogdb-caching",
+	"version": "1.0.0",
+	"description": "MongoDB with automatic Caching functionality using Keyv.",
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
+	"repository": "https://github.com/Timeraa/MongoDB-Caching",
+	"scripts": {
+		"test": "jest",
+		"dev": "tsc -w",
+		"build": "tsc"
+	},
+	"keywords": [
+		"mongodb",
+		"caching",
+		"automatic",
+		"keyv"
+	],
+	"author": "Timeraa",
+	"license": "MPL-2.0",
+	"devDependencies": {
+		"@shelf/jest-mongodb": "^3.0.2",
+		"@types/jest": "^28.1.4",
+		"jest": "^28.1.2",
+		"source-map-support": "^0.5.21",
+		"ts-jest": "^28.0.5",
+		"typescript": "^4.7.4"
+	},
+	"dependencies": {
+		"keyv": "^4.3.2",
+		"mongodb": "^4.7.0"
+	}
+}

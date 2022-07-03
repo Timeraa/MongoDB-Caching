@@ -1,0 +1,24 @@
+name: Publish Package
+on:
+  release:
+    types: [created]
+jobs:
+  publish:
+    name: Publish Package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          registry-url: "https://registry.npmjs.org"
+          cache: "pnpm"
+        run: pnpm i --frozen-lockfile
+      - name: Build package
+        run: pnpm build
+      - name: Publish package to NPM
+        run: pnpm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
