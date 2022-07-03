@@ -5,6 +5,9 @@
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
 	"repository": "https://github.com/Timeraa/MongoDB-Caching",
+	"files": [
+		"lib"
+	],
 	"scripts": {
 		"test": "jest",
 		"dev": "tsc -w",
