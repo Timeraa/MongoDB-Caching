@@ -1,5 +1,5 @@
 {
-	"name": "monogdb-caching",
+	"name": "mongodb-caching",
 	"version": "1.0.0",
 	"description": "MongoDB with automatic Caching functionality using Keyv.",
 	"main": "lib/index.js",
