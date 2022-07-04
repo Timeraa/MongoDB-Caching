@@ -54,7 +54,7 @@ export default class MongoDBCaching<TSchema = any, TContext = any> {
 
 			const res = await this.collection.findOne(filter, options?.findOptions);
 
-			await this.keyv.set(cacheKey, res, options?.ttl ?? 60);
+			await this.keyv.set(cacheKey, res, options?.ttl);
 
 			return res;
 		});
@@ -90,7 +90,7 @@ export default class MongoDBCaching<TSchema = any, TContext = any> {
 				)) ||
 				(await this.collection.find(filter, options?.findOptions).toArray());
 
-			await this.keyv.set(cacheKey, res, options?.ttl ?? 60);
+			await this.keyv.set(cacheKey, res, options?.ttl);
 
 			return res;
 		});
@@ -112,7 +112,7 @@ export default class MongoDBCaching<TSchema = any, TContext = any> {
 				options?.countOptions || {}
 			);
 
-			await this.keyv.set(cacheKey, res, options?.ttl ?? 60);
+			await this.keyv.set(cacheKey, res, options?.ttl);
 
 			return res;
 		});
