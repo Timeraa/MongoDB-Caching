@@ -45,7 +45,7 @@ export default class MongoDBCaching<TSchema = any, TContext = any> {
 			ttl?: number;
 		}
 	): Promise<Awaited<TSchema | null>> {
-		const cacheKey = this.getCacheKey(filter, options);
+		const cacheKey = "findOne-" + this.getCacheKey(filter, options);
 
 		return this.throttleFunction(cacheKey, async () => {
 			const cacheDoc = await this.keyv.get(cacheKey);
@@ -77,7 +77,7 @@ export default class MongoDBCaching<TSchema = any, TContext = any> {
 			? { ...options, cursor: options.cursor.toString() }
 			: undefined;
 
-		const cacheKey = this.getCacheKey(filter, cacheKeyOptions);
+		const cacheKey = "find-" + this.getCacheKey(filter, cacheKeyOptions);
 
 		return this.throttleFunction(cacheKey, async () => {
 			const cacheDoc = await this.keyv.get(cacheKey);
@@ -100,7 +100,7 @@ export default class MongoDBCaching<TSchema = any, TContext = any> {
 		filter: Filter<TSchema> = {},
 		options?: { countOptions?: CountDocumentsOptions; ttl?: number }
 	): Promise<number> {
-		const cacheKey = this.getCacheKey(filter);
+		const cacheKey = "countDocuments-" + this.getCacheKey(filter);
 
 		return this.throttleFunction(cacheKey, async () => {
 			const cacheDoc = await this.keyv.get(cacheKey);
