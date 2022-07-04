@@ -60,7 +60,9 @@ describe("MongoDB-Caching", () => {
 		expect(dbFindOneSpy).toHaveBeenCalledTimes(1);
 
 		expect(res).toMatchObject(doc);
-		expect(await cacheClass.keyv.has(cacheClass.getCacheKey(doc))).toBe(true);
+		expect(
+			await cacheClass.keyv.has("findOne-" + cacheClass.getCacheKey(doc))
+		).toBe(true);
 
 		dbFindOneSpy.mockRestore();
 	});
