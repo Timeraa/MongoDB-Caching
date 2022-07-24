@@ -2,7 +2,7 @@
 
 MongoDB with automatic Caching functionality using Keyv.
 
-## Instalation
+## Installation
 
 ```bash
 # npm
@@ -11,7 +11,7 @@ npm install mongodb-caching
 # yarn
 yarn add mongodb-caching
 
-#pnpm
+# pnpm
 pnpm i mongodb-caching
 ```
 
