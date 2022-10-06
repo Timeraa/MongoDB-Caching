@@ -1,6 +1,6 @@
 {
 	"name": "mongodb-caching",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"description": "MongoDB with automatic Caching functionality using Keyv.",
 	"main": "lib/index.js",
 	"types": "lib/index.d.ts",
