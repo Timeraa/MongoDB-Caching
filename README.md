@@ -22,6 +22,7 @@ _These functions automatically handle caching_
 - find
 - findOne
 - countDocuments
+- distinct
 
 **NOTE: When you update/insert/delete a document, the cache is not updated, you'll need to manually clear the cache using `customClass.clear()` or `customClass.keyv.clear()`**
 

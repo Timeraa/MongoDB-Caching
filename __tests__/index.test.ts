@@ -12,10 +12,14 @@ afterAll(async () => {
 	await connection.close();
 });
 
-class TestClass extends MongoDBCaching {}
+class TestClass extends MongoDBCaching<{
+	test: boolean;
+	title: string;
+}> {}
 
-const doc = { test: true },
-	doc1 = { test: false };
+const doc = { test: true, title: "test" },
+	doc1 = { test: false, title: "test" },
+	doc2 = { test: true, title: "test2" };
 
 describe("MongoDB-Caching", () => {
 	let cacheClass: TestClass;
@@ -25,7 +29,7 @@ describe("MongoDB-Caching", () => {
 	beforeAll(async () => {
 		cacheClass = new TestClass(connection.db("test").collection("test"));
 
-		await cacheClass.collection.insertMany([doc, doc1]);
+		await cacheClass.collection.insertMany([doc, doc1, doc2]);
 	});
 
 	it("should have no context", () => {
@@ -77,7 +81,7 @@ describe("MongoDB-Caching", () => {
 
 		expect(dbCountDocumentsSpy).toHaveBeenCalledTimes(1);
 
-		expect(res).toBe(2);
+		expect(res).toBe(3);
 
 		dbCountDocumentsSpy.mockRestore();
 	});
@@ -93,7 +97,7 @@ describe("MongoDB-Caching", () => {
 
 		expect(dbCountDocumentsSpy).toHaveBeenCalledTimes(1);
 
-		expect(res).toBe(2);
+		expect(res).toBe(3);
 
 		dbCountDocumentsSpy.mockRestore();
 	});
@@ -111,7 +115,7 @@ describe("MongoDB-Caching", () => {
 		const res = await cacheClass.find();
 
 		expect(dbFindSpy).toHaveBeenCalledTimes(1);
-		expect(res).toMatchObject([doc, doc1]);
+		expect(res).toMatchObject([doc, doc1, doc2]);
 
 		dbFindSpy.mockRestore();
 	});
@@ -133,8 +137,8 @@ describe("MongoDB-Caching", () => {
 			{ cursor: c => c.skip(1).toArray() }
 		);
 
-		expect(res1).toHaveLength(1);
-		expect(res1).toMatchObject([doc1]);
+		expect(res1).toHaveLength(2);
+		expect(res1).toMatchObject([doc1, doc2]);
 		expect(dbFindSpy).toHaveBeenCalledTimes(2);
 
 		dbFindSpy.mockRestore();
@@ -148,7 +152,7 @@ describe("MongoDB-Caching", () => {
 
 		expect(dbFindSpy).toHaveBeenCalledTimes(1);
 
-		expect(res).toMatchObject([doc, doc1]);
+		expect(res).toMatchObject([doc, doc1, doc2]);
 
 		dbFindSpy.mockRestore();
 	});
@@ -196,5 +200,30 @@ describe("MongoDB-Caching", () => {
 		expect(promise1).toStrictEqual(promise2);
 
 		activeThrottlesSpy.mockClear();
+	});
+
+	it("should return the distinct documents", async () => {
+		const dbDistinctSpy = jest.spyOn(cacheClass.collection, "distinct");
+
+		const res = await cacheClass.distinct("title", {});
+
+		expect(dbDistinctSpy).toHaveBeenCalledTimes(1);
+
+		expect(res).toStrictEqual(["test", "test2"]);
+
+		dbDistinctSpy.mockRestore();
+	});
+
+	it("should return the cached distinct documents", async () => {
+		const dbDistinctSpy = jest.spyOn(cacheClass.collection, "distinct");
+
+		await cacheClass.distinct("title", {});
+		const res = await cacheClass.distinct("title", {});
+
+		expect(dbDistinctSpy).toHaveBeenCalledTimes(1);
+
+		expect(res).toStrictEqual(["test", "test2"]);
+
+		dbDistinctSpy.mockRestore();
 	});
 });
