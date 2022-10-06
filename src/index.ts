@@ -74,12 +74,12 @@ export default class MongoDBCaching<
 		filter: Filter<TSchema> = {},
 		options?: {
 			findOptions?: FindOptions<Document>;
-			cursor: (c: FindCursor<WithId<TSchema>>) => Promise<WithId<TSchema>[]>;
+			cursor?: (c: FindCursor<WithId<TSchema>>) => Promise<WithId<TSchema>[]>;
 			ttl?: number;
 		}
 	): Promise<WithId<TSchema>[]> {
 		const cacheKeyOptions = options
-			? { ...options, cursor: options.cursor.toString() }
+			? { ...options, cursor: options.cursor?.toString() }
 			: undefined;
 
 		const cacheKey = "find-" + this.getCacheKey(filter, cacheKeyOptions);
@@ -90,7 +90,7 @@ export default class MongoDBCaching<
 			if (cacheDoc) return cacheDoc;
 
 			const res =
-				(await options?.cursor(
+				(await options?.cursor?.(
 					this.collection.find(filter, options.findOptions)
 				)) ||
 				(await this.collection.find(filter, options?.findOptions).toArray());
