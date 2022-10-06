@@ -8,10 +8,15 @@ import type {
 	Filter,
 	FindCursor,
 	FindOptions,
-	WithId
+	WithId,
+	Document,
+	DistinctOptions
 } from "mongodb";
 
-export default class MongoDBCaching<TSchema = any, TContext = any> {
+export default class MongoDBCaching<
+	TSchema extends Document = Document,
+	TContext = any
+> {
 	keyv: Keyv;
 	context?: TContext;
 
@@ -110,6 +115,33 @@ export default class MongoDBCaching<TSchema = any, TContext = any> {
 			const res = await this.collection.countDocuments(
 				filter,
 				options?.countOptions || {}
+			);
+
+			await this.keyv.set(cacheKey, res, options?.ttl);
+
+			return res;
+		});
+	}
+
+	async distinct<Key extends keyof WithId<TSchema>>(
+		key: Key,
+		filter: Filter<TSchema>,
+		options?: {
+			distinctOptions?: DistinctOptions;
+			ttl?: number;
+		}
+	) {
+		const cacheKey = `distinct-${key.toString()}-` + this.getCacheKey(filter);
+
+		return this.throttleFunction(cacheKey, async () => {
+			const cacheDoc = await this.keyv.get(cacheKey);
+
+			if (cacheDoc) return cacheDoc;
+
+			const res = await this.collection.distinct(
+				key,
+				filter,
+				options?.distinctOptions as DistinctOptions
 			);
 
 			await this.keyv.set(cacheKey, res, options?.ttl);
