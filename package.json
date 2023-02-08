@@ -31,6 +31,6 @@
 	},
 	"dependencies": {
 		"keyv": "^4.3.2",
-		"mongodb": "^4.7.0"
+		"mongodb": "^5.0.1"
 	}
 }
